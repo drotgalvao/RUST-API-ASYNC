@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  dev:
+    container_name: "rust-dev"
+    image: rust:1.75
+    build:
+      context: .
+      dockerfile: Dockerfile 
+    volumes:
+      - ./api:/app
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres/mydatabase
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
+
+  postgres:
+    container_name: postgres-rust
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydatabase
+    volumes:
+      - ./api/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./api/watch_init_sql.sh:/docker-entrypoint-initdb.d/watch_init_sql.sh
+      - ./api/postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
+    ports:
+      - "5432:5432"
