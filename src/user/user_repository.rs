@@ -5,13 +5,19 @@ use crate::user::user_dtos::CreateUserReqDto;
 use crate::user::user_dtos::CreateUserResDto;
 
 
+
 pub async fn create_user(
     pool: &PgPool,
     user_dto: CreateUserReqDto,
 ) -> Result<CreateUserResDto, String> {
 
 
-    println!("Creating user: {:?}", user_dto);
+    // let status = pool.status();
+    // println!("Available connections: {}", status.available);
+    // println!("Max connections: {}", status.max_size);
+    // println!("Total connections: {}", status.size);
+    // println!("Waiting connections: {}", status.waiting);
+    
     let client = match pool.get().await {
         Ok(client) => client,
         Err(err) => return Err(format!("Failed to connect to database: {}", err)),

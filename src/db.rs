@@ -1,5 +1,5 @@
 // db.rs
-use deadpool_postgres::{Config, Pool, Runtime};
+use deadpool_postgres::{Config, Pool, Runtime, PoolConfig};
 use tokio_postgres::NoTls;
 
 pub type PgPool = Pool;
@@ -11,6 +11,11 @@ pub async fn create_pool() -> PgPool {
     cfg.password = Some("postgres".to_string());
     cfg.host = Some("postgres".to_string()); // localhost or postgres
     cfg.port = Some(5432); // Defina a porta explicitamente
+
+    cfg.pool = Some(PoolConfig {
+        max_size: 25,
+        ..Default::default()
+    });
 
     match cfg.create_pool(Some(Runtime::Tokio1), NoTls) {
         Ok(pool) => {
